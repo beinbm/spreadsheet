@@ -46,24 +46,9 @@ class SpreadsheetWriter implements Writer
     protected $filename;
 
     /**
-     * @var bool
-     */
-    protected $prependHeaderRow;
-
-    /**
      * @var int
      */
     protected $row = 1;
-
-    /**
-     * @var null|string
-     */
-    protected $sheet;
-
-    /**
-     * @var string
-     */
-    protected $type;
 
     /**
      * @param \SplFileObject $file             File
@@ -71,12 +56,9 @@ class SpreadsheetWriter implements Writer
      * @param string         $type             Spreadsheet file type (defaults to Xlsx)
      * @param bool           $prependHeaderRow
      */
-    public function __construct(\SplFileObject $file, $sheet = null, $type = 'Xlsx', $prependHeaderRow = false)
+    public function __construct(\SplFileObject $file, protected $sheet = null, protected $type = 'Xlsx', protected $prependHeaderRow = false)
     {
         $this->filename         = $file->getPathname();
-        $this->sheet            = $sheet;
-        $this->type             = $type;
-        $this->prependHeaderRow = $prependHeaderRow;
     }
 
     /**

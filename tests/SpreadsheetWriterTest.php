@@ -38,7 +38,7 @@ class SpreadsheetWriterTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         if (!extension_loaded('zip')) {
-            $this->markTestSkipped();
+            static::markTestSkipped();
         }
     }
 
@@ -54,18 +54,14 @@ class SpreadsheetWriterTest extends \PHPUnit_Framework_TestCase
 
         $writer = new SpreadsheetWriter(new \SplFileObject($file, 'w'), null, 'Xlsx');
         $writer->prepare();
-        $writer->writeItem(array(
-            'col 1 name' => 'col 1 value',
-            'col 2 name' => 'col 2 value',
-            'col 3 name' => 'col 3 value',
-        ));
+        $writer->writeItem(['col 1 name' => 'col 1 value', 'col 2 name' => 'col 2 value', 'col 3 name' => 'col 3 value']);
         $writer->finish();
 
         $excel = IOFactory::load($file);
         $sheet = $excel->getActiveSheet()->toArray();
 
         // Values should be at first line
-        $this->assertEquals(array('col 1 value', 'col 2 value', 'col 3 value'), $sheet[0]);
+        static::assertEquals(['col 1 value', 'col 2 value', 'col 3 value'], $sheet[0]);
     }
 
     /**
@@ -81,21 +77,17 @@ class SpreadsheetWriterTest extends \PHPUnit_Framework_TestCase
 
         $writer = new SpreadsheetWriter(new \SplFileObject($file, 'w'), null, 'Xlsx', true);
         $writer->prepare();
-        $writer->writeItem(array(
-            'col 1 name' => 'col 1 value',
-            'col 2 name' => 'col 2 value',
-            'col 3 name' => 'col 3 value',
-        ));
+        $writer->writeItem(['col 1 name' => 'col 1 value', 'col 2 name' => 'col 2 value', 'col 3 name' => 'col 3 value']);
         $writer->finish();
 
         $excel = IOFactory::load($file);
         $sheet = $excel->getActiveSheet()->toArray();
 
         // Check column names at first line
-        $this->assertEquals(array('col 1 name', 'col 2 name', 'col 3 name'), $sheet[0]);
+        static::assertEquals(['col 1 name', 'col 2 name', 'col 3 name'], $sheet[0]);
 
         // Check values at second line
-        $this->assertEquals(array('col 1 value', 'col 2 value', 'col 3 value'), $sheet[1]);
+        static::assertEquals(['col 1 value', 'col 2 value', 'col 3 value'], $sheet[1]);
     }
 
     /**
@@ -108,17 +100,11 @@ class SpreadsheetWriterTest extends \PHPUnit_Framework_TestCase
         $writer = new SpreadsheetWriter(new \SplFileObject($file, 'w'), 'Sheet 1');
 
         $writer->prepare();
-        $writer->writeItem(array('first', 'last'));
+        $writer->writeItem(['first', 'last']);
 
-        $writer->writeItem(array(
-            'first' => 'James',
-            'last'  => 'Bond',
-        ));
+        $writer->writeItem(['first' => 'James', 'last'  => 'Bond']);
 
-        $writer->writeItem(array(
-            'first' => '',
-            'last'  => 'Dr. No',
-        ));
+        $writer->writeItem(['first' => '', 'last'  => 'Dr. No']);
 
         $writer->finish();
 
@@ -127,22 +113,19 @@ class SpreadsheetWriterTest extends \PHPUnit_Framework_TestCase
 
         $writer->prepare();
 
-        $writer->writeItem(array('first', 'last'));
+        $writer->writeItem(['first', 'last']);
 
-        $writer->writeItem(array(
-            'first' => 'Miss',
-            'last'  => 'Moneypenny',
-        ));
+        $writer->writeItem(['first' => 'Miss', 'last'  => 'Moneypenny']);
 
         $writer->finish();
 
         $excel = IOFactory::load($file);
 
-        $this->assertTrue($excel->sheetNameExists('Sheet 1'));
-        $this->assertEquals(3, $excel->getSheetByName('Sheet 1')->getHighestRow());
+        static::assertTrue($excel->sheetNameExists('Sheet 1'));
+        static::assertEquals(3, $excel->getSheetByName('Sheet 1')->getHighestRow());
 
-        $this->assertTrue($excel->sheetNameExists('Sheet 2'));
-        $this->assertEquals(2, $excel->getSheetByName('Sheet 2')->getHighestRow());
+        static::assertTrue($excel->sheetNameExists('Sheet 2'));
+        static::assertEquals(2, $excel->getSheetByName('Sheet 2')->getHighestRow());
     }
 
     /**
@@ -155,7 +138,7 @@ class SpreadsheetWriterTest extends \PHPUnit_Framework_TestCase
 
         $writer->prepare();
 
-        $writer->writeItem(array('first', 'last'));
+        $writer->writeItem(['first', 'last']);
 
         $writer->finish();
     }

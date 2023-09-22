@@ -100,12 +100,9 @@ class SpreadsheetReader implements CountableReader, \SeekableIterator
         }
     }
 
-    /**
-     * @return int
-     */
-    public function count()
+    public function count(): int
     {
-        $count = count($this->worksheet);
+        $count = count((array) $this->worksheet);
         if (null !== $this->headerRowNumber) {
             $count--;
         }
@@ -118,17 +115,15 @@ class SpreadsheetReader implements CountableReader, \SeekableIterator
      *
      * If a header row has been set, an associative array will be returned
      *
-     * @return array|null
-     *
      * @author  Derek Chafin <infomaniac50@gmail.com>
      */
-    public function current()
+    public function current(): ?array
     {
         $row = $this->worksheet[$this->pointer];
 
         // If the spreadsheet file has column headers, use them to construct an associative
         // array for the columns in this line
-        if (!empty($this->columnHeaders) && count($this->columnHeaders) === count($row)) {
+        if (!empty($this->columnHeaders) && count($this->columnHeaders) === (is_countable($row) ? count($row) : 0)) {
             return array_combine(array_values($this->columnHeaders), $row);
         }
 
@@ -138,22 +133,16 @@ class SpreadsheetReader implements CountableReader, \SeekableIterator
 
     /**
      * Get column headers
-     *
-     * @return array
      */
-    public function getColumnHeaders()
+    public function getColumnHeaders(): array
     {
         return $this->columnHeaders;
     }
 
     /**
      * Get a row
-     *
-     * @param int $number
-     *
-     * @return array
      */
-    public function getRow($number)
+    public function getRow(int $number): ?array
     {
         $this->seek($number);
 
@@ -162,20 +151,16 @@ class SpreadsheetReader implements CountableReader, \SeekableIterator
 
     /**
      * Return the key of the current element
-     *
-     * @return int
      */
-    public function key()
+    public function key(): int
     {
         return $this->pointer;
     }
 
     /**
      * Move forward to next element
-     *
-     * @return void Any returned value is ignored.
      */
-    public function next()
+    public function next(): void
     {
         $this->pointer++;
     }
@@ -186,10 +171,8 @@ class SpreadsheetReader implements CountableReader, \SeekableIterator
      * If a header row has been set, the pointer is set just below the header
      * row. That way, when you iterate over the rows, that header row is
      * skipped.
-     *
-     * @return void Any returned value is ignored.
      */
-    public function rewind()
+    public function rewind(): void
     {
         if (null === $this->headerRowNumber) {
             $this->pointer = 0;
@@ -202,24 +185,16 @@ class SpreadsheetReader implements CountableReader, \SeekableIterator
      * Seeks to a position
      *
      * @link http://php.net/manual/en/seekableiterator.seek.php
-     *
-     * @param int $pointer The position to seek to.
-     *
-     * @return void Any returned value is ignored.
      */
-    public function seek($pointer)
+    public function seek(int $offset): void
     {
-        $this->pointer = $pointer;
+        $this->pointer = $offset;
     }
 
     /**
      * Set column headers
-     *
-     * @param array $columnHeaders
-     *
-     * @return void Any returned value is ignored.
      */
-    public function setColumnHeaders(array $columnHeaders)
+    public function setColumnHeaders(array $columnHeaders): void
     {
         $this->columnHeaders = $columnHeaders;
     }
@@ -231,7 +206,7 @@ class SpreadsheetReader implements CountableReader, \SeekableIterator
      *
      * @return void Any returned value is ignored.
      */
-    public function setHeaderRowNumber($rowNumber)
+    public function setHeaderRowNumber(int $rowNumber): void
     {
         $this->headerRowNumber = $rowNumber;
         $this->columnHeaders   = $this->worksheet[$rowNumber];
@@ -243,7 +218,7 @@ class SpreadsheetReader implements CountableReader, \SeekableIterator
      * @return bool The return value will be casted to boolean and then evaluated.
      * Returns true on success or false on failure.
      */
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->worksheet[$this->pointer]);
     }

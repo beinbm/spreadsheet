@@ -37,7 +37,7 @@ class SpreadsheetReaderFactoryTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         if (!extension_loaded('zip')) {
-            $this->markTestSkipped();
+            static::markTestSkipped();
         }
     }
 
@@ -48,11 +48,11 @@ class SpreadsheetReaderFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $factory = new SpreadsheetReaderFactory();
         $reader  = $factory->getReader(new \SplFileObject(__DIR__.'/fixtures/data_column_headers.xlsx'));
-        $this->assertInstanceOf('\Port\Spreadsheet\SpreadsheetReader', $reader);
-        $this->assertCount(4, $reader);
+        static::assertInstanceOf('\\' . \Port\Spreadsheet\SpreadsheetReader::class, $reader);
+        static::assertCount(4, $reader);
 
         $factory = new SpreadsheetReaderFactory(0);
         $reader  = $factory->getReader(new \SplFileObject(__DIR__.'/fixtures/data_column_headers.xlsx'));
-        $this->assertCount(3, $reader);
+        static::assertCount(3, $reader);
     }
 }

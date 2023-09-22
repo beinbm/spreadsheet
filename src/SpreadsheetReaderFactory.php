@@ -34,23 +34,11 @@ use Port\Reader\ReaderFactory;
 class SpreadsheetReaderFactory implements ReaderFactory
 {
     /**
-     * @var int
-     */
-    protected $activeSheet;
-
-    /**
-     * @var int
-     */
-    protected $headerRowNumber;
-
-    /**
      * @param int $headerRowNumber
      * @param int $activeSheet
      */
-    public function __construct($headerRowNumber = null, $activeSheet = null)
+    public function __construct(protected $headerRowNumber = null, protected $activeSheet = null)
     {
-        $this->headerRowNumber = $headerRowNumber;
-        $this->activeSheet     = $activeSheet;
     }
 
     /**

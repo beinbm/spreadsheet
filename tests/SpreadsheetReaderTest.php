@@ -37,7 +37,7 @@ class SpreadsheetReaderTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         if (!extension_loaded('zip')) {
-            $this->markTestSkipped();
+            static::markTestSkipped();
         }
     }
 
@@ -48,7 +48,7 @@ class SpreadsheetReaderTest extends \PHPUnit_Framework_TestCase
     {
         $file   = new \SplFileObject(__DIR__.'/fixtures/data_column_headers.xlsx');
         $reader = new SpreadsheetReader($file, 0);
-        $this->assertEquals(3, $reader->count());
+        static::assertEquals(3, $reader->count());
     }
 
     /**
@@ -58,7 +58,7 @@ class SpreadsheetReaderTest extends \PHPUnit_Framework_TestCase
     {
         $file   = new \SplFileObject(__DIR__.'/fixtures/data_no_column_headers.xls');
         $reader = new SpreadsheetReader($file);
-        $this->assertEquals(3, $reader->count());
+        static::assertEquals(3, $reader->count());
     }
 
     /**
@@ -69,73 +69,27 @@ class SpreadsheetReaderTest extends \PHPUnit_Framework_TestCase
         $file   = new \SplFileObject(__DIR__.'/fixtures/data_column_headers.xlsx');
         $reader = new SpreadsheetReader($file, 0);
 
-        $this->assertEquals(
-            array(
-                'id',
-                'number',
-                'description',
-            ),
-            $reader->getColumnHeaders()
-        );
+        static::assertEquals(['id', 'number', 'description'], $reader->getColumnHeaders());
 
         $reader->setColumnHeaders(
-            array(
-                'id2',
-                'number2',
-                'description2',
-            )
+            ['id2', 'number2', 'description2']
         );
 
-        $this->assertEquals(
-            array(
-                'id2',
-                'number2',
-                'description2',
-            ),
-            $reader->getColumnHeaders()
-        );
+        static::assertEquals(['id2', 'number2', 'description2'], $reader->getColumnHeaders());
 
         // TODO: Check if row 0 should return the header row if headers are enabled.
         // Row 0 returns the header row as data and indexes.
         $row = $reader->getRow(0);
-        $this->assertEquals(
-            array(
-                'id2'          => 'id',
-                'number2'      => 'number',
-                'description2' => 'description',
-            ),
-            $row
-        );
+        static::assertEquals(['id2'          => 'id', 'number2'      => 'number', 'description2' => 'description'], $row);
 
         $row = $reader->getRow(3);
-        $this->assertEquals(
-            array(
-                'id2'          => 7.0,
-                'number2'      => 7890.0,
-                'description2' => 'Some more info',
-            ),
-            $row
-        );
+        static::assertEquals(['id2'          => 7.0, 'number2'      => 7890.0, 'description2' => 'Some more info'], $row);
 
         $row = $reader->getRow(1);
-        $this->assertEquals(
-            array(
-                'id2'          => 50.0,
-                'number2'      => 123.0,
-                'description2' => 'Description',
-            ),
-            $row
-        );
+        static::assertEquals(['id2'          => 50.0, 'number2'      => 123.0, 'description2' => 'Description'], $row);
 
         $row = $reader->getRow(2);
-        $this->assertEquals(
-            array(
-                'id2'          => 6.0,
-                'number2'      => 456.0,
-                'description2' => 'Another description',
-            ),
-            $row
-        );
+        static::assertEquals(['id2'          => 6.0, 'number2'      => 456.0, 'description2' => 'Another description'], $row);
     }
 
     /**
@@ -147,42 +101,17 @@ class SpreadsheetReaderTest extends \PHPUnit_Framework_TestCase
         $reader = new SpreadsheetReader($file);
 
         $reader->setColumnHeaders(
-            array(
-                'id',
-                'number',
-                'description',
-            )
+            ['id', 'number', 'description']
         );
 
         $row = $reader->getRow(2);
-        $this->assertEquals(
-            array(
-                'id'          => 7.0,
-                'number'      => 7890.0,
-                'description' => 'Some more info',
-            ),
-            $row
-        );
+        static::assertEquals(['id'          => 7.0, 'number'      => 7890.0, 'description' => 'Some more info'], $row);
 
         $row = $reader->getRow(0);
-        $this->assertEquals(
-            array(
-                'id'          => 50.0,
-                'number'      => 123.0,
-                'description' => 'Description',
-            ),
-            $row
-        );
+        static::assertEquals(['id'          => 50.0, 'number'      => 123.0, 'description' => 'Description'], $row);
 
         $row = $reader->getRow(1);
-        $this->assertEquals(
-            array(
-                'id'          => 6.0,
-                'number'      => 456.0,
-                'description' => 'Another description',
-            ),
-            $row
-        );
+        static::assertEquals(['id'          => 6.0, 'number'      => 456.0, 'description' => 'Another description'], $row);
     }
 
     /**
@@ -193,30 +122,14 @@ class SpreadsheetReaderTest extends \PHPUnit_Framework_TestCase
         $file   = new \SplFileObject(__DIR__.'/fixtures/data_column_headers.xlsx');
         $reader = new SpreadsheetReader($file, 0);
 
-        $actualData   = array();
-        $expectedData = array(
-            array(
-                'id'          => 50.0,
-                'number'      => 123.0,
-                'description' => 'Description',
-            ),
-            array(
-                'id'          => 6.0,
-                'number'      => 456.0,
-                'description' => 'Another description',
-            ),
-            array(
-                'id'          => 7.0,
-                'number'      => 7890.0,
-                'description' => 'Some more info',
-            ),
-        );
+        $actualData   = [];
+        $expectedData = [['id'          => 50.0, 'number'      => 123.0, 'description' => 'Description'], ['id'          => 6.0, 'number'      => 456.0, 'description' => 'Another description'], ['id'          => 7.0, 'number'      => 7890.0, 'description' => 'Some more info']];
 
         foreach ($reader as $row) {
             $actualData[] = $row;
         }
 
-        $this->assertEquals($expectedData, $actualData);
+        static::assertEquals($expectedData, $actualData);
     }
 
     /**
@@ -227,18 +140,14 @@ class SpreadsheetReaderTest extends \PHPUnit_Framework_TestCase
         $file   = new \SplFileObject(__DIR__.'/fixtures/data_no_column_headers.xls');
         $reader = new SpreadsheetReader($file);
 
-        $actualData   = array();
-        $expectedData = array(
-            array(50.0, 123.0, "Description"),
-            array(6.0, 456.0, 'Another description'),
-            array(7.0, 7890.0, 'Some more info'),
-        );
+        $actualData   = [];
+        $expectedData = [[50.0, 123.0, "Description"], [6.0, 456.0, 'Another description'], [7.0, 7890.0, 'Some more info']];
 
         foreach ($reader as $row) {
             $actualData[] = $row;
         }
 
-        $this->assertEquals($expectedData, $actualData);
+        static::assertEquals($expectedData, $actualData);
     }
 
     /**
@@ -248,7 +157,7 @@ class SpreadsheetReaderTest extends \PHPUnit_Framework_TestCase
     {
         $file   = new \SplFileObject(__DIR__.'/fixtures/data_no_column_headers.xls');
         $reader = new SpreadsheetReader($file, null, null, null, 1000);
-        $this->assertEquals(3, $reader->count());
+        static::assertEquals(3, $reader->count());
 
         // Without $maxRows, this faulty file causes OOM because of an extremely
         //high last row number
@@ -256,7 +165,7 @@ class SpreadsheetReaderTest extends \PHPUnit_Framework_TestCase
 
         $max    = 5;
         $reader = new SpreadsheetReader($file, null, null, null, $max);
-        $this->assertEquals($max, $reader->count());
+        static::assertEquals($max, $reader->count());
     }
 
     /**
@@ -266,10 +175,10 @@ class SpreadsheetReaderTest extends \PHPUnit_Framework_TestCase
     {
         $file         = new \SplFileObject(__DIR__.'/fixtures/data_multi_sheet.xls');
         $sheet1reader = new SpreadsheetReader($file, null, 0);
-        $this->assertEquals(3, $sheet1reader->count());
+        static::assertEquals(3, $sheet1reader->count());
 
         $sheet2reader = new SpreadsheetReader($file, null, 1);
-        $this->assertEquals(2, $sheet2reader->count());
+        static::assertEquals(2, $sheet2reader->count());
     }
 
     /**
@@ -283,48 +192,20 @@ class SpreadsheetReaderTest extends \PHPUnit_Framework_TestCase
         // TODO: Check if row 0 should return the header row if headers are enabled.
         // Row 0 returns the header row as data and indexes.
         $row = $reader->getRow(0);
-        $this->assertEquals(
-            array(
-                'id'          => 'id',
-                'number'      => 'number',
-                'description' => 'description',
-            ),
-            $row
-        );
-        $this->assertEquals(0, $reader->key());
+        static::assertEquals(['id'          => 'id', 'number'      => 'number', 'description' => 'description'], $row);
+        static::assertEquals(0, $reader->key());
 
         $row = $reader->getRow(3);
-        $this->assertEquals(
-            array(
-                'id'          => 7.0,
-                'number'      => 7890.0,
-                'description' => 'Some more info',
-            ),
-            $row
-        );
-        $this->assertEquals(3, $reader->key());
+        static::assertEquals(['id'          => 7.0, 'number'      => 7890.0, 'description' => 'Some more info'], $row);
+        static::assertEquals(3, $reader->key());
 
         $row = $reader->getRow(1);
-        $this->assertEquals(
-            array(
-                'id'          => 50.0,
-                'number'      => 123.0,
-                'description' => 'Description',
-            ),
-            $row
-        );
-        $this->assertEquals(1, $reader->key());
+        static::assertEquals(['id'          => 50.0, 'number'      => 123.0, 'description' => 'Description'], $row);
+        static::assertEquals(1, $reader->key());
 
         $row = $reader->getRow(2);
-        $this->assertEquals(
-            array(
-                'id'          => 6.0,
-                'number'      => 456.0,
-                'description' => 'Another description',
-            ),
-            $row
-        );
-        $this->assertEquals(2, $reader->key());
+        static::assertEquals(['id'          => 6.0, 'number'      => 456.0, 'description' => 'Another description'], $row);
+        static::assertEquals(2, $reader->key());
     }
 
     /**
@@ -336,33 +217,12 @@ class SpreadsheetReaderTest extends \PHPUnit_Framework_TestCase
         $reader = new SpreadsheetReader($file);
 
         $row = $reader->getRow(2);
-        $this->assertEquals(
-            array(
-                7.0,
-                7890.0,
-                'Some more info',
-            ),
-            $row
-        );
+        static::assertEquals([7.0, 7890.0, 'Some more info'], $row);
 
         $row = $reader->getRow(0);
-        $this->assertEquals(
-            array(
-                50.0,
-                123.0,
-                'Description',
-            ),
-            $row
-        );
+        static::assertEquals([50.0, 123.0, 'Description'], $row);
 
         $row = $reader->getRow(1);
-        $this->assertEquals(
-            array(
-                6.0,
-                456.0,
-                'Another description',
-            ),
-            $row
-        );
+        static::assertEquals([6.0, 456.0, 'Another description'], $row);
     }
 }
